@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="300.0dip"
+        android:background="@android:color/white"
+        android:layout_gravity="bottom">
+
+        <TextView
+            android:id="@+id/close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="8dip"
+            android:paddingTop="2.dip"
+            android:paddingBottom="2.0dip"
+            android:paddingLeft="5.0dip"
+            android:paddingRight="5.0dip"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="10dip"
+            android:text="@string/btn_close"
+            android:textSize="16sp"
+            android:textColor="#585758"/>
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dip"
+            android:layout_marginBottom="20.0dip"
+            android:text="@string/title_select"
+            android:textSize="16sp"
+            android:textColor="#585758"/>
+
+        <TextView
+            android:id="@+id/confirm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="8dip"
+            android:paddingTop="2.dip"
+            android:paddingBottom="2.0dip"
+            android:paddingLeft="5.0dip"
+            android:paddingRight="5.0dip"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dip"
+            android:background="?selectableItemBackground"
+            android:text="@string/btn_confirm"
+            android:textSize="16sp"
+            android:textColor="#585758"
+            android:visibility="gone"/>
+
+        <com.tlz.addressselector.AsViewPagerIndicator
+            android:id="@+id/as_indiacators"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/title"
+            android:background="@drawable/bottom_shadow_bg"/>
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/as_vp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/as_indiacators" />
+
+    </RelativeLayout>
+
+</FrameLayout>
