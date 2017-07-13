@@ -457,7 +457,9 @@ internal class AsViewPagerIndicator(context: Context, attr: AttributeSet) : View
         var address = ""
         for (item in listItems)
             address += "," + item
-        return address
+        return address.substring(1, address.length)
     }
+
+    fun getItems() = listItems
 
 }

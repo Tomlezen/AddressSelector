@@ -5,6 +5,10 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.design.widget.BottomSheetDialogFragment
+import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentActivity
+import android.support.v4.app.FragmentManager
+import android.support.v4.app.FragmentTransaction
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -32,7 +36,7 @@ import javax.xml.parsers.SAXParserFactory
 class AsDialog : BottomSheetDialogFragment(), DialogInterface.OnDismissListener, AdapterView.OnItemClickListener {
 
     /** 城市选择回调  */
-    private val callBack: AsActionCallback? = null
+    private var callBack: AsActionCallback? = null
 
     /** ViewPager适配器  */
     private val pagerAdapter: AsViewPagerAdapter by lazy {
@@ -40,6 +44,18 @@ class AsDialog : BottomSheetDialogFragment(), DialogInterface.OnDismissListener,
     }
 
     private val initContentData: String? = null
+
+    internal fun show(manager: FragmentManager){
+        super.show(manager, "AsDialog")
+    }
+
+    override fun show(manager: FragmentManager?, tag: String?) {
+
+    }
+
+    override fun show(transaction: FragmentTransaction?, tag: String?): Int {
+        return -1
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,7 +75,18 @@ class AsDialog : BottomSheetDialogFragment(), DialogInterface.OnDismissListener,
         as_vp.adapter = pagerAdapter
         as_indiacators.setupViewPager(as_vp)
 
-        confirm.setOnClickListener { }
+        confirm.setOnClickListener {
+            callBack?.onSelected(as_indiacators.getContent())
+            val items = mutableListOf<String>()
+            items.addAll(as_indiacators.getItems())
+            if (items.size < 3) {
+                for (i in 0..(3 - items.size)) {
+                    items.add("")
+                }
+            }
+            callBack?.onSelectedDetails(items[0], items[1], items[2])
+            dismiss()
+        }
         close.setOnClickListener { dismiss() }
 
         loadData()
@@ -189,8 +216,39 @@ class AsDialog : BottomSheetDialogFragment(), DialogInterface.OnDismissListener,
                 showConfirmBtn()
                 as_indiacators.changeItem(currentItem, (adapter.getItem(p2) as District).name, false)
             }
-            else -> {}
+            else -> {
+            }
         }
         (adapter as? DataAdapter<*>)?.setSelectedPosition(p2)
     }
+
+    internal fun setCallback(onSelected: (address: String) -> Unit, onSelectedDetails: (province: String, city: String, district: String) -> Unit) {
+        callBack = object : AsActionCallback {
+            override fun onSelectedDetails(province: String, city: String, district: String) {
+                onSelectedDetails(province, city, district)
+            }
+
+            override fun onSelected(address: String) {
+                onSelected(address)
+            }
+        }
+    }
+
+    companion object {
+        fun show(fragment: Fragment, onSelected: (address: String) -> Unit, onSelectedDetails: (province: String, city: String, district: String) -> Unit): AsDialog {
+            return show(fragment.fragmentManager, onSelected, onSelectedDetails)
+        }
+
+        fun show(activity: FragmentActivity, onSelected: (address: String) -> Unit, onSelectedDetails: (province: String, city: String, district: String) -> Unit): AsDialog {
+            return show(activity.supportFragmentManager, onSelected, onSelectedDetails)
+        }
+
+        fun show(fragmentManager: FragmentManager, onSelected: (address: String) -> Unit, onSelectedDetails: (province: String, city: String, district: String) -> Unit): AsDialog {
+            val asDialog = AsDialog()
+            asDialog.setCallback(onSelected, onSelectedDetails)
+            asDialog.show(fragmentManager)
+            return asDialog
+        }
+    }
+
 }
