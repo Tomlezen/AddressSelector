@@ -1,2 +1,2 @@
 # AddressSelector
-地址选择控件
+仿京东收货地址选择控件
