@@ -39,7 +39,7 @@ internal class AsViewPagerIndicator(context: Context, attr: AttributeSet) : View
     private val itemSpace: Int
 
     /** 指示器高度  */
-    private val indiactorHeight: Int
+    private val indicatorHeight: Int
 
     /** 横向间距  */
     private val horizontalSpace: Int
@@ -48,7 +48,7 @@ internal class AsViewPagerIndicator(context: Context, attr: AttributeSet) : View
     private val verticalSpace: Int
 
     /** item与指示器的间隔  */
-    private val itemIndicatotSpace: Int
+    private val itemIndicatorSpace: Int
 
     /** 文字中心点偏移值  */
     private val textCenterOffset = 0f
@@ -96,7 +96,7 @@ internal class AsViewPagerIndicator(context: Context, attr: AttributeSet) : View
     var isAnimatorRunning = false
 
     /** 是否是滑动切换ViewPager的Item  */
-    private var isHandleChange: Boolean = false
+    private var isHandChange: Boolean = false
 
     private var vp: ViewPager? = null
 
@@ -107,7 +107,7 @@ internal class AsViewPagerIndicator(context: Context, attr: AttributeSet) : View
             textNormalColor = tr.getColor(R.styleable.AsViewPagerIndicator_asTextColor, Color.BLACK)
             textSelectedColor = tr.getColor(R.styleable.AsViewPagerIndicator_asTextSelectedColor, Color.RED)
             indicatorColor = tr.getColor(R.styleable.AsViewPagerIndicator_asIndicatorColor, Color.RED)
-            indiactorHeight = tr.getColor(R.styleable.AsViewPagerIndicator_asIndiactorHeight, dp2px(1.5f))
+            indicatorHeight = tr.getColor(R.styleable.AsViewPagerIndicator_asIndicatorHeight, dp2px(1.5f))
             itemSpace = tr.getDimensionPixelSize(R.styleable.AsViewPagerIndicator_asItemSpace, dp2px(30f))
         } finally {
             tr.recycle()
@@ -117,7 +117,7 @@ internal class AsViewPagerIndicator(context: Context, attr: AttributeSet) : View
             textSize = this@AsViewPagerIndicator.textSize.toFloat()
             strokeJoin = Paint.Join.ROUND
         }
-        itemIndicatotSpace = dp2px(3f)
+        itemIndicatorSpace = dp2px(3f)
         horizontalSpace = dp2px(10f)
         verticalSpace = dp2px(3f)
     }
@@ -152,7 +152,7 @@ internal class AsViewPagerIndicator(context: Context, attr: AttributeSet) : View
             result = specSize
         else {
             if (listItems.size != 0)
-                result = (paddingTop + paddingBottom + itemHeight + verticalSpace * 2 + itemIndicatotSpace + indiactorHeight).toInt()
+                result = (paddingTop + paddingBottom + itemHeight + verticalSpace * 2 + itemIndicatorSpace + indicatorHeight).toInt()
             if (specMode == View.MeasureSpec.AT_MOST)
                 result = Math.min(result, specSize)
         }
@@ -164,7 +164,7 @@ internal class AsViewPagerIndicator(context: Context, attr: AttributeSet) : View
 
         if(changed){
             indicatorRectF.bottom = (height - paddingBottom - verticalSpace).toFloat()
-            indicatorRectF.top = indicatorRectF.bottom - indiactorHeight
+            indicatorRectF.top = indicatorRectF.bottom - indicatorHeight
         }
         super.onLayout(changed, left, top, right, bottom)
     }
@@ -207,13 +207,12 @@ internal class AsViewPagerIndicator(context: Context, attr: AttributeSet) : View
     override fun onDraw(canvas: Canvas?) {
         if (listItems.size <= 0)
             return
-        for (i in 0..listItems.size - 1) {
-            if (selectedPosition == i)
-                contentPaint.color = textSelectedColor
-            else if (curTouchedIndex == i) {
-                contentPaint.color = Color.GRAY
-            } else
-                contentPaint.color = textNormalColor
+        for (i in 0 until listItems.size) {
+            when {
+                selectedPosition == i -> contentPaint.color = textSelectedColor
+                curTouchedIndex == i -> contentPaint.color = Color.GRAY
+                else -> contentPaint.color = textNormalColor
+            }
             canvas?.drawText(listItems[i], listRectF[i].left, listRectF[i].bottom, contentPaint)
         }
 
@@ -226,7 +225,7 @@ internal class AsViewPagerIndicator(context: Context, attr: AttributeSet) : View
     }
 
     private fun calculateRectF() {
-        for (i in 0..listRectF.size - 1) {
+        for (i in 0 until listRectF.size) {
             if (i == 0) {
                 listRectF[i].left = (paddingLeft + horizontalSpace).toFloat()
                 listRectF[i].right = listRectF[i].left + contentPaint.measureText(listItems[i])
@@ -398,7 +397,7 @@ internal class AsViewPagerIndicator(context: Context, attr: AttributeSet) : View
     }
 
     fun changeItem(position: Int, item: String, isHasNext: Boolean){
-        isHandleChange = false
+        isHandChange = false
         if(listItems.size == 0 || position == listItems.size - 1){
             if(isHasNext){
                 addItem(item)
@@ -430,11 +429,11 @@ internal class AsViewPagerIndicator(context: Context, attr: AttributeSet) : View
 
     fun isSelectedItem(position: Int): Boolean = !(position < 0 || listItems.size <= position)
 
-    fun setupViewPager(vp: ViewPager){
+    fun setupWithViewPager(vp: ViewPager){
         this.vp = vp
         vp.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-                if (isHandleChange) {
+                if (isHandChange) {
                     scrollIndicator(listRectF[position], listRectF[if (position < listRectF.size - 1) position + 1 else position], positionOffset)
                 }
             }
@@ -445,9 +444,9 @@ internal class AsViewPagerIndicator(context: Context, attr: AttributeSet) : View
 
             override fun onPageScrollStateChanged(state: Int) {
                 if (state == ViewPager.SCROLL_STATE_DRAGGING) {
-                    isHandleChange = true
+                    isHandChange = true
                 } else if (state == ViewPager.SCROLL_STATE_IDLE) {
-                    isHandleChange = false
+                    isHandChange = false
                 }
             }
         })
@@ -456,7 +455,7 @@ internal class AsViewPagerIndicator(context: Context, attr: AttributeSet) : View
     fun getContent(): String{
         var address = ""
         for (item in listItems)
-            address += "," + item
+            address += ",$item"
         return address.substring(1, address.length)
     }
 

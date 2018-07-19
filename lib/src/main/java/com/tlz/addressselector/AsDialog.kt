@@ -73,7 +73,7 @@ class AsDialog : BottomSheetDialogFragment(), DialogInterface.OnDismissListener,
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         as_vp.adapter = pagerAdapter
-        as_indiacators.setupViewPager(as_vp)
+        as_indiacators.setupWithViewPager(as_vp)
 
         confirm.setOnClickListener {
             callBack?.onSelected(as_indiacators.getContent())
@@ -104,13 +104,11 @@ class AsDialog : BottomSheetDialogFragment(), DialogInterface.OnDismissListener,
         val view = ListView(context)
         view.isVerticalScrollBarEnabled = false
         view.divider = ColorDrawable(Color.TRANSPARENT)
-        val adapter: BaseAdapter
-        if (type == 0)
-            adapter = ProvinceAdapter()
-        else if (type == 1)
-            adapter = CityAdapter()
-        else
-            adapter = DistrictAdapter()
+        val adapter: BaseAdapter = when (type) {
+            0 -> ProvinceAdapter()
+            1 -> CityAdapter()
+            else -> DistrictAdapter()
+        }
         view.adapter = adapter
         view.onItemClickListener = this
         return view

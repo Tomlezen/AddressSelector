@@ -6,6 +6,6 @@
         <attr name="asTextSize" format="dimension" />
         <attr name="asIndicatorColor" format="color" />
         <attr name="asItemSpace" format="dimension" />
-        <attr name="asIndiactorHeight" format="dimension" />
+        <attr name="asIndicatorHeight" format="dimension" />
     </declare-styleable>
 </resources>

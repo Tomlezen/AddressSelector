@@ -6,7 +6,6 @@ apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 26
-    buildToolsVersion "25.0.3"
     defaultConfig {
         applicationId "com.tlz.addressselector.example"
         minSdkVersion 14
@@ -25,7 +24,7 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestCompile ('com.android.support.test.espresso:espresso-core:2.2.2', {
+    androidTestCompile ('com.android.support.test.espresso:espresso-core:3.0.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile parent.ext.support_v7
@@ -38,6 +37,8 @@ dependencies {
 buildscript {
 
     repositories {
+        jcenter()
+        mavenCentral()
         jcenter()
     }
 

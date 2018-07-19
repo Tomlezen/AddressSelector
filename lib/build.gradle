@@ -5,7 +5,6 @@ apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 26
-    buildToolsVersion "25.0.3"
 
 
     defaultConfig {
@@ -26,15 +25,17 @@ android {
 }
 
 dependencies {
-    compile parent.ext.support_v7
-    compile parent.ext.support_design
-    compile parent.ext.kotlin_jre
-    testCompile 'junit:junit:4.12'
+    implementation parent.ext.support_v7
+    implementation parent.ext.support_design
+    implementation parent.ext.kotlin_jre
+    testImplementation 'junit:junit:4.12'
 }
 
 buildscript {
 
     repositories {
+        jcenter()
+        mavenCentral()
         jcenter()
     }
 
